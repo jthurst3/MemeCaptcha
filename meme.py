@@ -16,7 +16,7 @@ class Meme:
             self.caption = ocr.ocr(self.image)
         # Make image dimensions uniform
         if len(self.image) != dimX or len(self.image[0]) != dimY:
-            self.image = alignDimensions.alignDimensions(self.image)
+            self.image = alignDimensions.alignDimensions(self.image, dimX, dimY)
 
 
 
