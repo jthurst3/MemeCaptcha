@@ -3,11 +3,11 @@
 # simplest loss function
 # TODO: make other (better) loss functions
 def count_loss(Y, Y_pred):
-    """returns the percentage of words in Y_pred that are also in Y, and
+    """returns an inverse of the percentage of words in Y_pred that are also in Y, and
     vice-versa"""
     words = words(Y)
     words_pred = words(Y_pred)
-    return (percent_membership(words, words_pred)+percent_membership(words_pred,words))/2.0
+    return 1-(percent_membership(words, words_pred)+percent_membership(words_pred,words))/2.0
 
 def percent_membership(words1, words2):
     """given two word sets, returns the percentage of words in words1 that are
