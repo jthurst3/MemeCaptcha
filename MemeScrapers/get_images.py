@@ -1,13 +1,25 @@
 #!/usr/bin/env python
 
+# given a txt file containing JSON output from memegenerator.net,
+# downloads all images referenced in the .txt file to the images/ folder,
+# and prints out a TSV-formatted output where each line contains an image url,
+# top text, and bottom text.
+
+# To run: $ ./get_images.py <json_file>, where <json_file> is a txt file
+# containing JSON output from memegenerator.net
+# e.g.    $ ./get_images.py ../scrape_output/memes_id.txt >> ../scrape_output/memes_id.tsv
+# NOTE: do not move this python file out of the directory it's in, it looks for
+# a folder called images/ one directory up.
+
 import sys
 import json
 import os
 
 # from http://stackoverflow.com/questions/196345/how-to-check-if-a-string-in-python-is-in-ascii
 def is_ascii(s):
-    return all(ord(c) < 128 for c in s)
-
+    if s:
+        return all(ord(c) < 128 for c in s)
+    return True
 
 def get_images(filename):
     memes = {}
@@ -18,10 +30,10 @@ def get_images(filename):
             top = j['text0']
             bottom = j['text1']
             # quick "english" check
-            if is_ascii(top) and is_ascii(bottom):
+            if url and is_ascii(top) and is_ascii(bottom):
                 if url not in memes:
                     memes[url] = []
-                memes[url].append([top, bottom])
+                memes[url].append([(top or '(no top text)'), (bottom or '(no bottom text')])
 
     # list of images already gotten (check by filename)
     existing_images = os.listdir('../images/')
