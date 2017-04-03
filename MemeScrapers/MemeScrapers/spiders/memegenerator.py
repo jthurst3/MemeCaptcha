@@ -16,7 +16,7 @@ class MemegeneratorSpider(scrapy.Spider):
     def start_requests(self):
         # use the Popular Page generator first
         # id_generator = self.get_pages_by_id(9000000, 9001000)
-        id_generator = self.get_pages_by_id(9000000, 9001000)
+        id_generator = self.get_pages_by_id(9000000, 10000000)
         for url in id_generator:
             yield scrapy.Request(url=url, callback=self.parse)
 
@@ -35,7 +35,7 @@ class MemegeneratorSpider(scrapy.Spider):
             page_index += 1
 
     # parse memegenerator API response and put into JSON file
-    def parse(self, response, filename='memes_id.txt'):
+    def parse(self, response, filename='../scrape_output/memegenerator_id_0402.txt'):
         page = response.url
         json_response = json.loads(response.body)
         if json_response['success']:
