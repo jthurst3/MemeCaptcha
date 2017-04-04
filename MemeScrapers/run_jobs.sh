@@ -1,6 +1,6 @@
 #!/bin/bash -i
 
-computers="phelps porter colden"
+computers="blake cascade colden macomb marcy nye phelps porter sawteeth seward tabletop algonquin armstrong cliff colvin gothics haystack hough iroquois marshall panther redfield skylight whiteface wright"
 lower=10000000
 size=1000000
 
