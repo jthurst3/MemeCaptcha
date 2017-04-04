@@ -2,7 +2,7 @@
 
 computers="phelps porter colden"
 lower=10000000
-size=200
+size=1000000
 
 for c in $computers; do
 	upper=$(($lower + size))
