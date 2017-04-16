@@ -12,6 +12,8 @@ from nltk.tag import StanfordNERTagger
 Run:
 python extract_text_features.py <sentences.txt> <out.txt>
 '''
+import nltk
+from nltk.collocations import *
 
 
 inputfile = sys.argv[1]
@@ -50,6 +52,8 @@ ner_st = StanfordNERTagger(ner_model, ner_jar)
 pos_jar = os.path.abspath("stanford-postagger-2016-10-31/stanford-postagger.jar")
 pos_model =  os.path.abspath("stanford-postagger-2016-10-31/models/english-bidirectional-distsim.tagger")
 pos_st = StanfordPOSTagger(pos_model, pos_jar) 
+
+# TODO: Figure out how the cat paper store the features
 
 
 
@@ -108,8 +112,3 @@ with open(inputfile, 'r') as inf: # assume each line is one sentence
 		os._exit(1)
 		
 outf.close() # input file is already closed in 'with open' so we don't have to close it manually 
-
-
-
-
-
