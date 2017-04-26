@@ -34,6 +34,11 @@ sh_binary(
 )
 
 sh_binary(
+    name = "process_meme_json",
+    srcs = ["data_scripts/process_meme_json.sh"],
+)
+
+sh_binary(
     name = "download_inception",
     srcs = ["data_scripts/download_inception.sh"],
 )
