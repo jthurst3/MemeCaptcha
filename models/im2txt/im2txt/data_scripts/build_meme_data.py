@@ -425,7 +425,7 @@ def _load_and_process_metadata(captions_file, image_dir):
     id_to_captions.setdefault(image_id, [])
     id_to_captions[image_id].append([top_text, bottom_text])
 
-  assert len(id_to_filename) == len(id_to_captions)
+  # assert len(id_to_filename) == len(id_to_captions)
   assert set([x[0] for x in id_to_filename]) == set(id_to_captions.keys())
   print("Loaded caption metadata for %d images from %s" %
         (len(id_to_filename), captions_file))

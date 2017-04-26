@@ -31,7 +31,7 @@ fi
 
 # Create the output directories.
 OUTPUT_DIR="${1%/}"
-SCRATCH_DIR="${OUTPUT_DIR}/raw-data"
+SCRATCH_DIR="${OUTPUT_DIR}"
 mkdir -p "${OUTPUT_DIR}"
 mkdir -p "${SCRATCH_DIR}"
 CURRENT_DIR=$(pwd)
@@ -39,12 +39,12 @@ WORK_DIR="$0.runfiles/im2txt/im2txt"
 
 cd ${SCRATCH_DIR}
 
-TRAIN_CAPTIONS_FILE="${SCRATCH_DIR}/annotations/memes_armstrong_aa.json"
+TRAIN_CAPTIONS_FILE="${SCRATCH_DIR}/memes_armstrong_aa.json"
 
 # Build TFRecords of the image data.
 cd "${CURRENT_DIR}"
 #BUILD_SCRIPT="${WORK_DIR}/build_mscoco_data"
-BUILD_SCRIPT="/scratch/jthurst3/tf_models/im2txt/bazel-bin/im2txt/build_meme_data"
+BUILD_SCRIPT="/scratch/jthurst3/MemeCaptcha/models/im2txt/bazel-bin/im2txt/build_meme_data"
 "${BUILD_SCRIPT}" \
   --train_image_dir="${TRAIN_IMAGE_DIR}" \
   --train_captions_file="${TRAIN_CAPTIONS_FILE}" \
