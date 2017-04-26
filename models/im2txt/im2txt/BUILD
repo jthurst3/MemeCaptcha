@@ -36,6 +36,9 @@ sh_binary(
 sh_binary(
     name = "process_meme_json",
     srcs = ["data_scripts/process_meme_json.sh"],
+    data = [
+	":build_meme_data",
+    ],
 )
 
 sh_binary(

@@ -39,6 +39,7 @@ WORK_DIR="$0.runfiles/im2txt/im2txt"
 
 cd ${SCRATCH_DIR}
 
+TRAIN_IMAGE_DIR="/public/jthurst3/MemeCaptcha/images"
 TRAIN_CAPTIONS_FILE="${SCRATCH_DIR}/memes_armstrong_aa.json"
 
 # Build TFRecords of the image data.

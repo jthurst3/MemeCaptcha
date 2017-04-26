@@ -222,7 +222,7 @@ def _to_sequence_example(image, decoder, vocab):
     return
 
   context = tf.train.Features(feature={
-      "image/image_id": _int64_feature(image.image_id),
+      "image/image_id": _int64_feature(int(image.image_id)),
       "image/data": _bytes_feature(encoded_image),
   })
 
@@ -414,7 +414,8 @@ def _load_and_process_metadata(captions_file, image_dir):
     caption_data = json.load(f)
 
   # Extract the filenames.
-  id_to_filename = [(x["image_id"], x["image_id"] + '.jpg') for x in caption_data["memes"]]
+  id_to_filename = list(set([(x["image_id"], x["image_id"] + '.jpg') for x in
+	  caption_data["memes"]]))
 
   # Extract the captions. Each image_id is associated with multiple captions.
   id_to_captions = {}
@@ -438,6 +439,7 @@ def _load_and_process_metadata(captions_file, image_dir):
     filename = os.path.join(image_dir, base_filename)
     captions = [_process_caption(c) for c in id_to_captions[image_id]]
     image_metadata.append(ImageMetadata(image_id, filename, captions))
+    print("processed", num_captions, "captions.")
     num_captions += len(captions)
   print("Finished processing %d captions for %d images in %s" %
         (num_captions, len(id_to_filename), captions_file))
@@ -467,7 +469,7 @@ def main(unused_argv):
                                                   # FLAGS.val_image_dir)
 
   # Create vocabulary from the training captions.
-  captions = [c for image in train_dataset for c in image.captions]
+  captions = [c for image in dataset for c in image.captions]
   vocab = _create_vocab(captions)
 
   _process_dataset("train", dataset, vocab, FLAGS.train_shards)
