@@ -120,6 +120,8 @@ tf.flags.DEFINE_integer("test_shards", 8,
 
 tf.flags.DEFINE_string("start_word", "<S>",
                        "Special word added to the beginning of each sentence.")
+tf.flags.DEFINE_string("between_captions", "<BC>",
+                       "Special word added to separate the top text and the bottom text.")
 tf.flags.DEFINE_string("end_word", "</S>",
                        "Special word added to the end of each sentence.")
 tf.flags.DEFINE_string("unknown_word", "<UNK>",
@@ -388,8 +390,12 @@ def _process_caption(caption):
   Returns:
     A list of strings; the tokenized caption.
   """
+  top_text = caption[0]
+  bottom_text = caption[1]
   tokenized_caption = [FLAGS.start_word]
-  tokenized_caption.extend(nltk.tokenize.word_tokenize(caption.lower()))
+  tokenized_caption.extend(nltk.tokenize.word_tokenize(top_text.lower()))
+  tokenized_caption.append(FLAGS.between_captions)
+  tokenized_caption.extend(nltk.tokenize.word_tokenize(bottom_text.lower()))
   tokenized_caption.append(FLAGS.end_word)
   return tokenized_caption
 
@@ -408,15 +414,16 @@ def _load_and_process_metadata(captions_file, image_dir):
     caption_data = json.load(f)
 
   # Extract the filenames.
-  id_to_filename = [(x["id"], x["file_name"]) for x in caption_data["images"]]
+  id_to_filename = [(x["image_id"], x["image_id"] + '.jpg') for x in caption_data["memes"]]
 
   # Extract the captions. Each image_id is associated with multiple captions.
   id_to_captions = {}
-  for annotation in caption_data["annotations"]:
+  for annotation in caption_data["memes"]:
     image_id = annotation["image_id"]
-    caption = annotation["caption"]
+    top_text = annotation["top_text"]
+    bottom_text = annotation["bottom_text"]
     id_to_captions.setdefault(image_id, [])
-    id_to_captions[image_id].append(caption)
+    id_to_captions[image_id].append([top_text, bottom_text])
 
   assert len(id_to_filename) == len(id_to_captions)
   assert set([x[0] for x in id_to_filename]) == set(id_to_captions.keys())
@@ -437,7 +444,7 @@ def _load_and_process_metadata(captions_file, image_dir):
 
   return image_metadata
 
-
+# Modified from build_mscoco_data.py
 def main(unused_argv):
   def _is_valid_num_shards(num_shards):
     """Returns True if num_shards is compatible with FLAGS.num_threads."""
@@ -454,9 +461,9 @@ def main(unused_argv):
     tf.gfile.MakeDirs(FLAGS.output_dir)
 
   # Load image metadata from caption files.
-  mscoco_train_dataset = _load_and_process_metadata(FLAGS.train_captions_file,
+  train_dataset = _load_and_process_metadata(FLAGS.train_captions_file,
                                                     FLAGS.train_image_dir)
-  mscoco_val_dataset = _load_and_process_metadata(FLAGS.val_captions_file,
+  val_dataset = _load_and_process_metadata(FLAGS.val_captions_file,
                                                   FLAGS.val_image_dir)
 
   # Redistribute the MSCOCO data as follows:
