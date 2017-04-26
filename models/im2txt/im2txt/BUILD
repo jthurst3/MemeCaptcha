@@ -11,9 +11,31 @@ package_group(
     ],
 )
 
+py_binary(
+    name = "build_mscoco_data",
+    srcs = [
+        "data_scripts/build_mscoco_data.py",
+    ],
+)
+
+py_binary(
+    name = "build_meme_data",
+    srcs = [
+        "data_scripts/build_meme_data.py",
+    ],
+)
+
+sh_binary(
+    name = "download_and_preprocess_mscoco",
+    srcs = ["data_scripts/download_and_preprocess_mscoco.sh"],
+    data = [
+        ":build_mscoco_data",
+    ],
+)
+
 sh_binary(
     name = "download_inception",
-    srcs = ["data/download_inception.sh"],
+    srcs = ["data_scripts/download_inception.sh"],
 )
 
 py_library(
