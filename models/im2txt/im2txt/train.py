@@ -98,6 +98,7 @@ def main(unused_argv):
     # Set up the Saver for saving and restoring model checkpoints.
     saver = tf.train.Saver(max_to_keep=training_config.max_checkpoints_to_keep)
 
+  print("got here1")
   # Run training.
   tf.contrib.slim.learning.train(
       train_op,

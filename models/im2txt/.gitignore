@@ -5,3 +5,4 @@
 /bazel-im2txt
 /bazel-testlogs
 /bazel-tf
+slurm_logs/

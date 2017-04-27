@@ -40,7 +40,12 @@ WORK_DIR="$0.runfiles/im2txt/im2txt"
 cd ${SCRATCH_DIR}
 
 TRAIN_IMAGE_DIR="/public/jthurst3/MemeCaptcha/images"
-TRAIN_CAPTIONS_FILE="${SCRATCH_DIR}/memes_armstrong_aa.json"
+TRAIN_CAPTIONS_FILE="${SCRATCH_DIR}/annotations/marshall-train.json"
+
+# TODO: partition images so that we're not using the same images for training
+# and validation
+VAL_IMAGE_DIR="/public/jthurst3/MemeCaptcha/images"
+VAL_CAPTIONS_FILE="${SCRATCH_DIR}/annotations/marshall-val.json"
 
 # Build TFRecords of the image data.
 cd "${CURRENT_DIR}"
@@ -48,6 +53,8 @@ cd "${CURRENT_DIR}"
 BUILD_SCRIPT="/scratch/jthurst3/MemeCaptcha/models/im2txt/bazel-bin/im2txt/build_meme_data"
 "${BUILD_SCRIPT}" \
   --train_image_dir="${TRAIN_IMAGE_DIR}" \
+  --val_image_dir="${VAL_IMAGE_DIR}" \
   --train_captions_file="${TRAIN_CAPTIONS_FILE}" \
-  --output_dir="${OUTPUT_DIR}" \
+  --val_captions_file="${VAL_CAPTIONS_FILE}" \
+  --output_dir="${OUTPUT_DIR}/run1" \
   --word_counts_output_file="${OUTPUT_DIR}/word_counts.txt" \

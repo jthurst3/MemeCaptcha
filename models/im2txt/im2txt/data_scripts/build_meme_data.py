@@ -463,17 +463,17 @@ def main(unused_argv):
     tf.gfile.MakeDirs(FLAGS.output_dir)
 
   # Load image metadata from caption files.
-  dataset = _load_and_process_metadata(FLAGS.train_captions_file,
+  train_dataset = _load_and_process_metadata(FLAGS.train_captions_file,
                                                     FLAGS.train_image_dir)
-  # val_dataset = _load_and_process_metadata(FLAGS.val_captions_file,
-                                                  # FLAGS.val_image_dir)
+  val_dataset = _load_and_process_metadata(FLAGS.val_captions_file,
+						  FLAGS.val_image_dir)
 
   # Create vocabulary from the training captions.
-  captions = [c for image in dataset for c in image.captions]
-  vocab = _create_vocab(captions)
+  train_captions = [c for image in train_dataset for c in image.captions]
+  vocab = _create_vocab(train_captions)
 
-  _process_dataset("train", dataset, vocab, FLAGS.train_shards)
-  # _process_dataset("val", val_dataset, vocab, FLAGS.val_shards)
+  _process_dataset("train", train_dataset, vocab, FLAGS.train_shards)
+  _process_dataset("val", val_dataset, vocab, FLAGS.val_shards)
   # _process_dataset("test", test_dataset, vocab, FLAGS.test_shards)
 
 
