@@ -20,7 +20,9 @@ def get_files(direc, end):
 
 # splits images up into a set of training ones and a set of validation ones
 def split_images(image_dir):
-	images = get_files(image_dir, '.json')
+	print("splitting images")
+	images = get_files(image_dir, '.jpg')
+	images = [i.split('.jpg')[0] for i in images]
 	# shuffle the images
 	random.shuffle(images)
 	cutoff = int(len(images)*train_percent)
@@ -35,15 +37,16 @@ def write_JSON(image_set, input_json_files, filename):
 	j['memes'] = []
 	j['images'] = list(image_set)
 	memes = j['memes']
-	for jfile in json_files:
+	for jfile in input_json_files:
 		with open(os.path.join(input_directory, jfile), 'r') as f:
 			# each input JSON file will be in the same format as the
 			# output JSON file
 			caption_data = json.load(f)
 			caption_memes = caption_data['memes']
 			for meme in caption_memes:
-				if meme['image_url'] in image_set:
+				if meme['image_id'] in image_set:
 					memes.append(meme)
+		print("finished reading from", jfile)
 	# write it to the output file
 	with open(filename, 'w') as f:
 		json.dump(j, f)
@@ -53,15 +56,24 @@ def partition_dataset():
 	# check if either output file exists. Return an error message if so.
 	train_file = os.path.join(output_directory, "train.json")
 	validation_file = os.path.join(output_directory, "val.json")
-	for f in [train_file, validation_file]:
+	train_images_file = os.path.join(output_directory, "train.images")
+	validation_images_file = os.path.join(output_directory, "val.images")
+	for f in [train_file, validation_file, train_images_file,
+			validation_images_file]:
 		if os.path.exists(f):
-			print("File ", f, "already exists. Please remove \
-			before running.")
+			print("File ", f, "already exists. Please remove before running.")
 			sys.exit(1)
 	train_images, val_images = split_images(image_directory)
 	input_files = get_files(input_directory, '.json')
-	write_JSON(train_images, input_files, 'train.json')
-	write_JSON(val_images, input_files, 'val.json')
+	write_JSON(train_images, input_files, train_file)
+	write_JSON(val_images, input_files, validation_file)
+	# record image partition to files
+	with open(train_images_file, 'w') as f:
+		for image in train_images:
+			f.write(image + '\n')
+	with open(validation_images_file, 'w') as f:
+		for image in val_images:
+			f.write(image + '\n')
 
 if __name__ == '__main__':
 	partition_dataset()
