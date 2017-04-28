@@ -34,27 +34,28 @@ OUTPUT_DIR="${1%/}"
 SCRATCH_DIR="${OUTPUT_DIR}"
 mkdir -p "${OUTPUT_DIR}"
 mkdir -p "${SCRATCH_DIR}"
-CURRENT_DIR=$(pwd)
+CURR_DIR=$(pwd)
 WORK_DIR="$0.runfiles/im2txt/im2txt"
 
 #cd ${SCRATCH_DIR}
 
 TRAIN_IMAGE_DIR="/public/jthurst3/MemeCaptcha/images"
-TRAIN_CAPTIONS_FILE="${SCRATCH_DIR}/annotations/all-train.json"
+TRAIN_CAPTIONS_FILE="${SCRATCH_DIR}/train.json"
 
-# TODO: partition images so that we're not using the same images for training
-# and validation
 VAL_IMAGE_DIR="/public/jthurst3/MemeCaptcha/images"
-VAL_CAPTIONS_FILE="${SCRATCH_DIR}/annotations/all-val.json"
+VAL_CAPTIONS_FILE="${SCRATCH_DIR}/val.json"
+
+cd /scratch/jthurst3/MemeCaptcha/models/im2txt
+module load bazel
+bazel build -c opt im2txt/...
+cd ${CURR_DIR}
 
 # Build TFRecords of the image data.
-cd "${CURRENT_DIR}"
-#BUILD_SCRIPT="${WORK_DIR}/build_mscoco_data"
 BUILD_SCRIPT="/scratch/jthurst3/MemeCaptcha/models/im2txt/bazel-bin/im2txt/build_meme_data"
 "${BUILD_SCRIPT}" \
   --train_image_dir="${TRAIN_IMAGE_DIR}" \
   --val_image_dir="${VAL_IMAGE_DIR}" \
   --train_captions_file="${TRAIN_CAPTIONS_FILE}" \
   --val_captions_file="${VAL_CAPTIONS_FILE}" \
-  --output_dir="${OUTPUT_DIR}/run1" \
+  --output_dir="${OUTPUT_DIR}" \
   --word_counts_output_file="${OUTPUT_DIR}/word_counts.txt" \
