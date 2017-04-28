@@ -7,10 +7,13 @@ import sys
 
 # percent of images to be in the training set
 train_percent = 0.66
+# max number of captions per meme (ranked in order of popularity, ties broken
+# arbitrarily
+max_captions_per_meme = 5
 
 base_directory = '/public/jthurst3/MemeCaptcha'
 image_directory = base_directory + '/images'
-input_directory = base_directory + '/cleaned_data'
+input_directory = base_directory + '/new_cleaned_data'
 output_directory = base_directory + '/tensorflow_input_data'
 
 # gets all files in a directory that end with something
@@ -31,34 +34,49 @@ def split_images(image_dir):
 	return set(train_images), set(val_images)
 
 # gets image split from train.images and val.images
-def get_image_split(image_dir):
+def get_image_split(output_dir):
 	print("getting existing split from train.images and val.images")
 	train_images = set()
 	val_images = set()
-	with open(os.path.join(image_dir), 'train.images') as f:
-		train_images = set([s.split() for s in f])
-	with open(os.path.join(image_dir), 'val.images') as f:
-		val_images = set([s.split() for s in f])
+	with open(os.path.join(output_dir, 'train.images'), 'r') as f:
+		train_images = set([s.strip() for s in f])
+	with open(os.path.join(output_dir, 'val.images'), 'r') as f:
+		val_images = set([s.strip() for s in f])
 	return train_images, val_images
 
 
 # given a set of images, writes a JSON object to a file with all image-caption pairs that
 # contain images in the set, from an original list of JSON files.
+# For each image, only take the 5-most highly ranked memes in the data set
 def write_JSON(image_set, input_json_files, filename):
 	j = {}
 	j['memes'] = []
 	j['images'] = list(image_set)
 	memes = j['memes']
+	# dictionary of image --> list<meme>. List can only be of length n,
+	# where n is the maximum number of captions per image.
+	top_n_meme_list = {}
+	for image in image_set:
+		top_n_meme_list[image] = []
 	for jfile in input_json_files:
-		with open(os.path.join(input_directory, jfile), 'r') as f:
+		print("on file", jfile)
+		with open(os.path.join(input_directory, jfile), 'rU') as f:
 			# each input JSON file will be in the same format as the
 			# output JSON file
 			caption_data = json.load(f)
 			caption_memes = caption_data['memes']
 			for meme in caption_memes:
 				if meme['image_id'] in image_set:
-					memes.append(meme)
+					# append to top_n_meme_list in first
+					# pass, then filter later
+					top_n_meme_list[meme['image_id']].append(meme)
 		print("finished reading from", jfile)
+	# filter top_n_meme_list to only take max n captions per image
+	for image in top_n_meme_list:
+		meme_list = top_n_meme_list[image]
+		meme_list.sort(key=lambda x: x['upvotes'], reverse=True)
+		meme_list = meme_list[:max_captions_per_meme]
+		memes.extend(meme_list)
 	# write it to the output file
 	with open(filename, 'w') as f:
 		json.dump(j, f)
@@ -78,9 +96,9 @@ def partition_dataset():
 			# print("File ", f, "already exists. Please remove before running.")
 			# sys.exit(1)
 	if files_exist:
-		train_images, val_images = get_image_split(image_directory)
+		train_images, val_images = get_image_split(output_directory)
 	else:
-		train_images, val_images = split_images(image_directory)
+		train_images, val_images = split_images(image_dir)
 	input_files = get_files(input_directory, '.json')
 	write_JSON(train_images, input_files, train_file)
 	write_JSON(val_images, input_files, validation_file)
