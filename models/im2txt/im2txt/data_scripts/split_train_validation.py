@@ -30,6 +30,18 @@ def split_images(image_dir):
 	val_images = images[cutoff:]
 	return set(train_images), set(val_images)
 
+# gets image split from train.images and val.images
+def get_image_split(image_dir):
+	print("getting existing split from train.images and val.images")
+	train_images = set()
+	val_images = set()
+	with open(os.path.join(image_dir), 'train.images') as f:
+		train_images = set([s.split() for s in f])
+	with open(os.path.join(image_dir), 'val.images') as f:
+		val_images = set([s.split() for s in f])
+	return train_images, val_images
+
+
 # given a set of images, writes a JSON object to a file with all image-caption pairs that
 # contain images in the set, from an original list of JSON files.
 def write_JSON(image_set, input_json_files, filename):
@@ -58,12 +70,17 @@ def partition_dataset():
 	validation_file = os.path.join(output_directory, "val.json")
 	train_images_file = os.path.join(output_directory, "train.images")
 	validation_images_file = os.path.join(output_directory, "val.images")
+	files_exist = False
 	for f in [train_file, validation_file, train_images_file,
 			validation_images_file]:
 		if os.path.exists(f):
-			print("File ", f, "already exists. Please remove before running.")
-			sys.exit(1)
-	train_images, val_images = split_images(image_directory)
+			files_exist = True
+			# print("File ", f, "already exists. Please remove before running.")
+			# sys.exit(1)
+	if files_exist:
+		train_images, val_images = get_image_split(image_directory)
+	else:
+		train_images, val_images = split_images(image_directory)
 	input_files = get_files(input_directory, '.json')
 	write_JSON(train_images, input_files, train_file)
 	write_JSON(val_images, input_files, validation_file)
