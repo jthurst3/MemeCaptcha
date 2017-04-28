@@ -12,7 +12,7 @@ import os
 import sys
 
 directory = '/public/jthurst3/MemeCaptcha/data/sharded'
-output_file = '/public/jthurst3/MemeCaptcha/cleaned_data/memes.json'
+output_directory = '/public/jthurst3/MemeCaptcha/cleaned_data'
 
 bad_files = ['memegenerator_first_100.tsv',
 'memegenerator_armstrong_22000000_23000000aa',
@@ -48,6 +48,7 @@ def bottom_text(t):
 # assumes f is a file path, so we need to open it.
 def append_entries(j, path):
 	memes = j['memes']
+	path = os.path.join(directory, path)
 	f = open(path, 'rU')
 	reader = csv.reader(f, delimiter='\t')
 	counter = 0
@@ -71,20 +72,28 @@ def append_entries(j, path):
 # main method: create JSON file
 def create_JSON():
 	# warn user if we already created JSON file
-	if os.path.exists(output_file):
-		print('Output file exists. Please remove before running.')
-		sys.exit(1)
+	# if os.path.exists(output_file):
+		# print('Output file exists. Please remove before running.')
+		# sys.exit(1)
 	# otherwise, continue
-	out = open(output_file, 'w')
-	j = {}
-	j['memes'] = []
-	files = [os.path.join(directory, f) for f in get_files(directory)]
+	# files = [os.path.join(directory, f) for f in get_files(directory)]
+	files = get_files(directory)
+	# print(files)
 	# testing
-	files = [os.path.join(directory, 'memegenerator_marshall_29000000_30000000aa')]
+	# files = [os.path.join(directory, 'xaa')]
 	for f in files:
-		print("starting from ", f)
-		append_entries(j, f)
-	json.dump(j, out)
+		try:
+
+			output_file = os.path.join(output_directory, f + ".json")
+			# print(output_file)
+			out = open(output_file, 'w')
+			print("starting from ", f)
+			j = {}
+			j['memes'] = []
+			append_entries(j, f)
+			json.dump(j, out)
+		except:
+			print("failed to parse file", f)
 	
 if __name__ == '__main__':
 	create_JSON()
