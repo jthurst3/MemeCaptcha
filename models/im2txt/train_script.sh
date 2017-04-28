@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p gpu
 #SBATCH -N 2
-#SBATCH --mem=1GB
+#SBATCH --mem=10GB
 #SBATCH -t 10:00:00
 #SBATCH -o slurm_logs/first_train.out
 #SBATCH -e slurm_logs/first_train.err
@@ -20,7 +20,8 @@ INCEPTION_CHECKPOINT="${IM2TXT_DIR}/im2txt/data/inception_v3.ckpt"
 MODEL_DIR="${IM2TXT_DIR}/im2txt/model"
 
 # Build the model.
-/scratch/jthurst3/bin/bazel build -c opt im2txt/...
+module load bazel
+bazel build -c opt im2txt/...
 
 echo $IM2TXT_DIR $MEME_DIR $INCEPTION_CHECKPOINT $MODEL_DIR
 

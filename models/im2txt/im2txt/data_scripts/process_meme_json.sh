@@ -37,15 +37,15 @@ mkdir -p "${SCRATCH_DIR}"
 CURRENT_DIR=$(pwd)
 WORK_DIR="$0.runfiles/im2txt/im2txt"
 
-cd ${SCRATCH_DIR}
+#cd ${SCRATCH_DIR}
 
 TRAIN_IMAGE_DIR="/public/jthurst3/MemeCaptcha/images"
-TRAIN_CAPTIONS_FILE="${SCRATCH_DIR}/annotations/marshall-train.json"
+TRAIN_CAPTIONS_FILE="${SCRATCH_DIR}/annotations/all-train.json"
 
 # TODO: partition images so that we're not using the same images for training
 # and validation
 VAL_IMAGE_DIR="/public/jthurst3/MemeCaptcha/images"
-VAL_CAPTIONS_FILE="${SCRATCH_DIR}/annotations/marshall-val.json"
+VAL_CAPTIONS_FILE="${SCRATCH_DIR}/annotations/all-val.json"
 
 # Build TFRecords of the image data.
 cd "${CURRENT_DIR}"
