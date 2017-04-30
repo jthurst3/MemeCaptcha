@@ -95,7 +95,7 @@ def inception_v3(images,
           activation_fn=tf.nn.relu,
           normalizer_fn=slim.batch_norm,
           normalizer_params=batch_norm_params):
-        net, end_points = inception_v3_base(images, scope=scope)
+        net, end_points = inception_v3_base(images,final_endpoint = 'Conv2d_1a_3x3',scope=scope)
         with tf.variable_scope("logits"):
           shape = net.get_shape()
           net = slim.avg_pool2d(net, shape[1:3], padding="VALID", scope="pool")
