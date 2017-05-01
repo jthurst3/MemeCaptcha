@@ -1,23 +1,24 @@
 #!/bin/bash
 #SBATCH -p gpu
 #SBATCH -N 2
-#SBATCH --mem=10GB
+#SBATCH --mem=24GB
+#SBATCH --gres=gpu:2
 #SBATCH -t 10:00:00
 #SBATCH -o slurm_logs/first_train.out
 #SBATCH -e slurm_logs/first_train.err
 #SBATCH -J first_train
 #SBATCH --mail-type=all
 
-IM2TXT_DIR=/scratch/jthurst3/MemeCaptcha/models/im2txt
+IM2TXT_DIR=/public/jthurst3/MemeCaptcha
 
 # Directory containing preprocessed meme data.
-MEME_DIR="${IM2TXT_DIR}/im2txt/data"
+MEME_DIR="${IM2TXT_DIR}/tensorflow_input_data"
 
 # Inception v3 checkpoint file.
-INCEPTION_CHECKPOINT="${IM2TXT_DIR}/im2txt/data/inception_v3.ckpt"
+INCEPTION_CHECKPOINT="/scratch/jthurst3/MemeCaptcha/models/im2txt/im2txt/data/inception_v3.ckpt"
 
 # Directory to save the model.
-MODEL_DIR="${IM2TXT_DIR}/im2txt/model"
+MODEL_DIR="${IM2TXT_DIR}/model"
 
 # Build the model.
 module load bazel
