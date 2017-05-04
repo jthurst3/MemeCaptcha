@@ -18,7 +18,7 @@ MEME_DIR="${IM2TXT_DIR}/tensorflow_input_data"
 INCEPTION_CHECKPOINT="/scratch/jthurst3/MemeCaptcha/models/im2txt/im2txt/data/inception_v3.ckpt"
 
 # Directory to save the model.
-MODEL_DIR="${IM2TXT_DIR}/model"
+MODEL_DIR="${IM2TXT_DIR}/models/<unique_modelname_here>"
 
 # Build the model.
 module load bazel

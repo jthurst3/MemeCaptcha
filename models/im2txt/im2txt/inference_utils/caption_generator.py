@@ -179,6 +179,7 @@ class CaptionGenerator(object):
         words_and_probs = list(enumerate(word_probabilities))
         words_and_probs.sort(key=lambda x: -x[1])
         words_and_probs = words_and_probs[0:self.beam_size]
+	# print(words_and_probs)
         # Each next word gives a new partial caption.
         for w, p in words_and_probs:
           if p < 1e-12:

@@ -67,7 +67,7 @@ def main(_):
     # Prepare the caption generator. Here we are implicitly using the default
     # beam search parameters. See caption_generator.py for a description of the
     # available beam search parameters.
-    generator = caption_generator.CaptionGenerator(model, vocab, beam_size=5)
+    generator = caption_generator.CaptionGenerator(model, vocab, beam_size=3)
 
     for filename in filenames:
       with tf.gfile.GFile(filename, "r") as f:
