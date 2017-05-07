@@ -180,9 +180,13 @@ class CaptionGenerator(object):
         words_and_probs.sort(key=lambda x: -x[1])
         words_and_probs = words_and_probs[0:self.beam_size]
 	# print(words_and_probs)
+	# print(partial_caption.sentence)
         # Each next word gives a new partial caption.
+	# print(len(self.vocab.vocab))
+	# print(len(self.vocab))
         for w, p in words_and_probs:
-          if p < 1e-12:
+	  # TODO: change to vocab size
+	  if p < 1e-12 or w >= len(self.vocab.vocab) - 1:
             continue  # Avoid log(0).
           sentence = partial_caption.sentence + [w]
           logprob = partial_caption.logprob + math.log(p)

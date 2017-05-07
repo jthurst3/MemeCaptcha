@@ -81,7 +81,7 @@ class ModelConfig(object):
 class TrainingConfig(object):
   """Wrapper class for training hyperparameters."""
 
-  def __init__(self):
+  def __init__(self, max_checkpoints_to_keep=5):
     """Sets the default training hyperparameters."""
     # Number of examples per epoch of training data.
     self.num_examples_per_epoch = 586363
@@ -101,4 +101,4 @@ class TrainingConfig(object):
     self.clip_gradients = 5.0
 
     # How many model checkpoints to keep.
-    self.max_checkpoints_to_keep = 5
+    self.max_checkpoints_to_keep = max_checkpoints_to_keep
