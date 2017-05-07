@@ -8,16 +8,17 @@
 #SBATCH -J first_train
 #SBATCH --mail-type=all
 
-IM2TXT_DIR=/scratch/jthurst3/MemeCaptcha/models/im2txt
+module load caffe
+IM2TXT_DIR=/public/jthurst3/MemeCaptcha
 
 # Directory containing preprocessed meme data.
-MEME_DIR="${IM2TXT_DIR}/im2txt/data"
+MEME_DIR="${IM2TXT_DIR}/tensorflow_input_data"
 
 # Inception v3 checkpoint file.
-INCEPTION_CHECKPOINT="${IM2TXT_DIR}/im2txt/data/inception_v3.ckpt"
+INCEPTION_CHECKPOINT="${IM2TXT_DIR}/checkpoints/inception_v3.ckpt"
 
 # Directory to save the model.
-MODEL_DIR="${IM2TXT_DIR}/im2txt/model"
+MODEL_DIR="${IM2TXT_DIR}/models/cnn_lstm_run1"
 
 # Build the model.
 module load bazel
@@ -27,7 +28,7 @@ echo $IM2TXT_DIR $MEME_DIR $INCEPTION_CHECKPOINT $MODEL_DIR
 
 #cd im2txt
 
-# Run the training script.
+# Run the training script. Not training inception.
 #python im2txt/train.py \
 bazel-bin/im2txt/train \
   --input_file_pattern="${MEME_DIR}/train-?????-of-00256" \
@@ -35,3 +36,10 @@ bazel-bin/im2txt/train \
   --train_dir="${MODEL_DIR}/train" \
   --train_inception=false \
   --number_of_steps=1000000
+
+#training inception.
+# bazel-bin/im2txt/train \
+#   --input_file_pattern="${MEME_DIR}/train-?????-of-00256" \
+#   --train_dir="${MODEL_DIR}/train" \
+#   --train_inception=true \
+#   --number_of_steps=10000

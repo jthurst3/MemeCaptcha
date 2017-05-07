@@ -8,10 +8,11 @@
 #SBATCH -J first_evaluation
 #SBATCH --mail-type=all
 
-IM2TXT_DIR=/scratch/tkhunkhe/MemeCaptcha/models/im2txt
+module load caffe
+IM2TXT_DIR=/public/jthurst3/MemeCaptcha
 
-MEME_DIR="${IM2TXT_DIR}/im2txt/data"
-MODEL_DIR="${IM2TXT_DIR}/im2txt/model"
+MEME_DIR="${IM2TXT_DIR}/tensorflow_input_data"
+MODEL_DIR="${IM2TXT_DIR}/models/cnn_lstm_run1"
 
 # Ignore GPU devices (only necessary if your GPU is currently memory
 # constrained, for example, by running the training script).
