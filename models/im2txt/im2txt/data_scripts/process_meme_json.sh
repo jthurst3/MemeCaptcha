@@ -31,7 +31,7 @@ fi
 
 # Create the output directories.
 OUTPUT_DIR="${1%/}"
-SCRATCH_DIR="${OUTPUT_DIR}"
+SCRATCH_DIR="/public/jthurst3/MemeCaptcha/tensorflow_input_data"
 mkdir -p "${OUTPUT_DIR}"
 mkdir -p "${SCRATCH_DIR}"
 CURR_DIR=$(pwd)
@@ -62,3 +62,4 @@ BUILD_SCRIPT="/scratch/jthurst3/MemeCaptcha/models/im2txt/bazel-bin/im2txt/build
   --output_dir="${OUTPUT_DIR}" \
   --word_counts_output_file="${OUTPUT_DIR}/word_counts_min1.txt" \
   --min_word_count="$MIN_WORD_COUNT" \
+  --character_precision="True" \

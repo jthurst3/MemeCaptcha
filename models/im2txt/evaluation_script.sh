@@ -1,27 +1,28 @@
 #!/bin/bash
 #SBATCH -p gpu
-#SBATCH -N 2
+#SBATCH -N 1
 #SBATCH --mem=16GB
-#SBATCH --gres=gpu:2
-#SBATCH -t 10:00:00
-#SBATCH -o slurm_logs/first_evaluation.out
-#SBATCH -e slurm_logs/first_evaluation.err
-#SBATCH -J first_evaluation
+#SBATCH -t 24:00:00
+#SBATCH -o slurm_logs/char_im2txt_evaluation1.out
+#SBATCH -e slurm_logs/char_im2txt_evaluation1.err
+#SBATCH -J evaluation_im2txt_min_1
 #SBATCH --mail-type=all
 
 IM2TXT_DIR=/public/jthurst3/MemeCaptcha
 
-MEME_DIR="${IM2TXT_DIR}/tensorflow_input_data"
-MODEL_DIR="${IM2TXT_DIR}/model"
+MEME_DIR="${IM2TXT_DIR}/character_input_data"
+MODEL_DIR="${IM2TXT_DIR}/models/char_im2txt"
 
 # Ignore GPU devices (only necessary if your GPU is currently memory
 # constrained, for example, by running the training script).
 #export CUDA_VISIBLE_DEVICES=""
 
 # modified from https://superuser.com/questions/878640/unix-script-wait-until-a-file-exists
-until [ -f "${IM2TXT_DIR}/model/train/checkpoint" ]; do
+until [ -f "${MODEL_DIR}/train/checkpoint" ]; do
 	sleep 60
 done
+
+#module load tensorflow
 
 # Run the evaluation script. This will run in a loop, periodically loading the
 # latest model checkpoint file and computing evaluation metrics.

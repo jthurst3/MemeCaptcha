@@ -44,13 +44,13 @@ class Vocabulary(object):
       tf.logging.fatal("Vocab file %s not found.", vocab_file)
     tf.logging.info("Initializing vocabulary from file: %s", vocab_file)
 
+    reverse_vocab = []
     with tf.gfile.GFile(vocab_file, mode="r") as f:
-      reverse_vocab = list(f.readlines())
-    reverse_vocab = [line.split()[0] for line in reverse_vocab]
+      reverse_vocab = self._parse_reverse_vocab(f)
+    print(reverse_vocab)
     assert start_word in reverse_vocab
     assert end_word in reverse_vocab
-    if unk_word not in reverse_vocab:
-      reverse_vocab.append(unk_word)
+    reverse_vocab.append(unk_word)
     vocab = dict([(x, y) for (y, x) in enumerate(reverse_vocab)])
 
     tf.logging.info("Created vocabulary with %d words" % len(vocab))
@@ -62,6 +62,23 @@ class Vocabulary(object):
     self.start_id = vocab[start_word]
     self.end_id = vocab[end_word]
     self.unk_id = vocab[unk_word]
+
+  def _parse_reverse_vocab(self, f):
+    """Since there may be special characters in the vocabulary file, we'll need
+    to parse the file manually, instead of calling f.readlines()"""
+    txt = f.read()
+    reverse_vocab = []
+    while len(txt) > 0:
+      # input character
+      c, sp, txt = txt.partition(' ')
+      assert(sp == ' ')
+      if len(c) == 0:
+	# got literal space character
+	reverse_vocab.append(' ')
+      else:
+	reverse_vocab.append(c)
+      txt = txt.partition('\n')[2]
+    return reverse_vocab
 
   def word_to_id(self, word):
     """Returns the integer word id of a word string."""

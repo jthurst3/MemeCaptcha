@@ -38,6 +38,27 @@ tf.flags.DEFINE_string("vocab_file", "", "Text file containing the vocabulary.")
 tf.flags.DEFINE_string("input_files", "",
                        "File pattern or comma-separated list of file patterns "
                        "of image files.")
+tf.flags.DEFINE_integer("max_caption_length", 20,
+		       "Maximum number of tokens to generate in a caption.")
+
+tf.logging.set_verbosity(tf.logging.INFO)
+
+
+def main(_):
+  # Build the inference graph.
+  g = tf.Graph()
+  with g.as_default():
+    model = inference_wrapper.InferenceWrapper()
+    restore_fn = model.build_graph_from_config(configuration.ModelConfig(),
+                                               FLAGS.checkpoint_path)
+  g.finalize()
+
+  # Create the vocabulary.
+  vocab = vocabulary.Vocabulary(FLAGS.vocab_file)
+
+  filenames = []
+  for file_pattern in FLAGS.input_files.split(","):
+    filenames.extend(tf.gfile.Glob(file_pattern))
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
@@ -67,7 +88,8 @@ def main(_):
     # Prepare the caption generator. Here we are implicitly using the default
     # beam search parameters. See caption_generator.py for a description of the
     # available beam search parameters.
-    generator = caption_generator.CaptionGenerator(model, vocab, beam_size=3)
+    generator = caption_generator.CaptionGenerator(model, vocab, beam_size=3,
+		    max_caption_length=FLAGS.max_caption_length)
 
     for filename in filenames:
       with tf.gfile.GFile(filename, "r") as f:
@@ -77,7 +99,7 @@ def main(_):
       for i, caption in enumerate(captions):
         # Ignore begin and end words.
         sentence = [vocab.id_to_word(w) for w in caption.sentence[1:-1]]
-        sentence = " ".join(sentence)
+        sentence = "".join(sentence)
         print("  %d) %s (p=%f)" % (i, sentence, math.exp(caption.logprob)))
 
 

@@ -132,6 +132,9 @@ tf.flags.DEFINE_integer("min_word_count", 4,
 tf.flags.DEFINE_string("word_counts_output_file", "/tmp/word_counts.txt",
                        "Output vocabulary file of word counts.")
 
+tf.flags.DEFINE_bool("character_precision", False,
+		"whether to do character- or word-level parsing")
+
 tf.flags.DEFINE_integer("num_threads", 8,
                         "Number of threads to preprocess the images.")
 
@@ -393,9 +396,15 @@ def _process_caption(caption):
   top_text = caption[0]
   bottom_text = caption[1]
   tokenized_caption = [FLAGS.start_word]
-  tokenized_caption.extend(nltk.tokenize.word_tokenize(top_text.lower()))
+  if FLAGS.character_precision:
+	  tokenized_caption.extend([c for c in top_text.lower()])
+  else:
+	  tokenized_caption.extend(nltk.tokenize.word_tokenize(top_text.lower()))
   tokenized_caption.append(FLAGS.between_captions)
-  tokenized_caption.extend(nltk.tokenize.word_tokenize(bottom_text.lower()))
+  if FLAGS.character_precision:
+	  tokenized_caption.extend([c for c in bottom_text.lower()])
+  else:
+	  tokenized_caption.extend(nltk.tokenize.word_tokenize(bottom_text.lower()))
   tokenized_caption.append(FLAGS.end_word)
   return tokenized_caption
 
