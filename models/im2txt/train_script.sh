@@ -2,17 +2,16 @@
 #SBATCH -p gpu
 #SBATCH -N 2
 #SBATCH --mem=24GB
-#SBATCH --gres=gpu:2
 #SBATCH -t 10:00:00
-#SBATCH -o slurm_logs/first_train.out
-#SBATCH -e slurm_logs/first_train.err
-#SBATCH -J first_train
+#SBATCH -o slurm_logs/train_im2txt_min_1.out
+#SBATCH -e slurm_logs/train_im2txt_min_1.err
+#SBATCH -J train_min1
 #SBATCH --mail-type=all
 
 IM2TXT_DIR=/public/jthurst3/MemeCaptcha
 
 # Directory containing preprocessed meme data.
-MEME_DIR="${IM2TXT_DIR}/tensorflow_input_data"
+MEME_DIR="${IM2TXT_DIR}/tensorflow_input_data_min1"
 
 # Inception v3 checkpoint file.
 INCEPTION_CHECKPOINT="/scratch/jthurst3/MemeCaptcha/models/im2txt/im2txt/data/inception_v3.ckpt"

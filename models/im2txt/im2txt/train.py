@@ -50,7 +50,8 @@ def main(unused_argv):
   model_config = configuration.ModelConfig()
   model_config.input_file_pattern = FLAGS.input_file_pattern
   model_config.inception_checkpoint_file = FLAGS.inception_checkpoint_file
-  training_config = configuration.TrainingConfig()
+  training_config = configuration.TrainingConfig(
+		  max_checkpoints_to_keep=FLAGS.max_checkpoints_to_keep)
 
   # Create training directory.
   train_dir = FLAGS.train_dir
