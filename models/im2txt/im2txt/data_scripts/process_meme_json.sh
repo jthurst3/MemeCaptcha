@@ -45,7 +45,7 @@ TRAIN_CAPTIONS_FILE="${SCRATCH_DIR}/train.json"
 VAL_IMAGE_DIR="/public/jthurst3/MemeCaptcha/images"
 VAL_CAPTIONS_FILE="${SCRATCH_DIR}/val.json"
 
-MIN_WORD_COUNT=1
+MIN_WORD_COUNT=4
 
 cd /scratch/jthurst3/MemeCaptcha/models/im2txt
 module load bazel
@@ -60,5 +60,5 @@ BUILD_SCRIPT="/scratch/jthurst3/MemeCaptcha/models/im2txt/bazel-bin/im2txt/build
   --train_captions_file="${TRAIN_CAPTIONS_FILE}" \
   --val_captions_file="${VAL_CAPTIONS_FILE}" \
   --output_dir="${OUTPUT_DIR}" \
-  --word_counts_output_file="${OUTPUT_DIR}/word_counts_min1.txt" \
+  --word_counts_output_file="${OUTPUT_DIR}/word_counts_min4.txt" \
   --min_word_count="$MIN_WORD_COUNT" \

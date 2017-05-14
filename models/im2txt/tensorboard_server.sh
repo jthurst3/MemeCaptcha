@@ -10,7 +10,7 @@
 
 IM2TXT_DIR=/public/jthurst3/MemeCaptcha
 
-MODEL_DIR="${IM2TXT_DIR}/model"
+MODEL_DIR="${IM2TXT_DIR}/models/first_im2txt"
 
 # Run a TensorBoard server.
 tensorboard --logdir="${MODEL_DIR}"
